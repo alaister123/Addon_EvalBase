@@ -1,19 +1,33 @@
-from nltk.translate import meteor_score
+#from nltk.translate import meteor_score
 import evaluate
 from REUSE_main.mChunker import getChunkBasedScore
 from software.SDC_len import *
 
+# class meteor_score_formatted():
+    
+#     def __init__(self):
+#         self.model = meteor_score.single_meteor_score
+    
+#     # The ALPHA, BETA, GAMMA values are default values based on hugging face's docs
+#     # https://huggingface.co/spaces/evaluate-metric/meteor/blob/main/meteor.py
+#     def compute(self,predictions, references):
+#         result = {'meteor_score':[]}
+#         for pred, ref in zip(predictions, references):
+#             result['meteor_score'].append(self.model(ref, pred, alpha=0.9, beta=3, gamma=0.5))
+#         return result
+
+
 class meteor_score_formatted():
     
     def __init__(self):
-        self.model = meteor_score.single_meteor_score
+        self.model = evaluate.load('meteor').compute
     
     # The ALPHA, BETA, GAMMA values are default values based on hugging face's docs
     # https://huggingface.co/spaces/evaluate-metric/meteor/blob/main/meteor.py
     def compute(self,predictions, references):
         result = {'meteor_score':[]}
         for pred, ref in zip(predictions, references):
-            result['meteor_score'].append(self.model(ref, pred, alpha=0.9, beta=3, gamma=0.5))
+            result['meteor_score'].append(self.model(predictions=[pred], references=[ref])['meteor'])
         return result
 
 
