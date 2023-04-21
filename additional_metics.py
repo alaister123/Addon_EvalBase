@@ -31,7 +31,7 @@ class meteor_score_formatted():
         return result
 
 
-class bleu_score_formatted():
+class sacrebleu_score_formatted():
     
     def __init__(self):
         self.model = evaluate.load("sacrebleu")
@@ -43,6 +43,21 @@ class bleu_score_formatted():
         for pred, ref in zip(predictions, references):
             result['bleu_score'].append(self.model.compute(predictions=[pred], references=[ref])['score'])
         return result
+
+
+class bleu_score_formatted():
+    
+    def __init__(self):
+        self.model = evaluate.load("bleu")
+    
+    #input is [str,str,str]
+    #hard coded the score
+    def compute(self, predictions, references):
+        result = {'bleu_score':[]}
+        for pred, ref in zip(predictions, references):
+            result['bleu_score'].append(self.model.compute(predictions=[pred], references=[ref])['bleu'])
+        return result
+
 
 # REUSE_Score
 # https://aclanthology.org/2022.wmt-1.50/
