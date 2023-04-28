@@ -2,6 +2,7 @@
 import evaluate
 from REUSE_main.mChunker import getChunkBasedScore
 from software.SDC_len import *
+from bart_score import BARTScorer
 
 # class meteor_score_formatted():
     
@@ -128,4 +129,30 @@ class SDC_Star():
             pearson = (p+1)*cr/((p+1)/2+cr) # This is the formula they wrote for the code in sdc_len.py
             
             result['sdc*_score'].append(pearson)
+        return result
+    
+
+
+
+# BART_Score (cnndm ver)
+# https://arxiv.org/abs/2106.11520
+# https://github.com/neulab/BARTScore
+#
+##################################
+# How to run this metric
+# 1. No need Setup, Just use it, the models are handled by huggingface
+###################################
+# This is hardcoded for gpu
+# The function got the ability to handle List[str, str, str] data, but when actually running it with
+# EvalBase it outputs error, therefore, compute single line and append to dict
+class BART_Score_Eval():
+    
+    def __init__(self):
+        self.model = BARTScorer(device='cuda', checkpoint='facebook/bart-large-cnn')
+            
+            
+    def compute(self, predictions, references):
+        result = {'Bart_Score':[]}
+        for pred, ref in zip(predictions, references):
+            result['Bart_Score'].append(self.model.score([ref], [pred], batch_size=4)[0])
         return result
